@@ -12,6 +12,12 @@ Every action must strictly follow this sequence:
 - Don't manually write complex UI CSS/HTML scratch unless fixing a minor bug.
 - Ask the Magic MCP to generate the component based on requirements.
 
+## 2.1 The Signature Aesthetic
+**Global Default**: Unless specified otherwise, all UI MUST use the **"Void Aesthetic"**:
+- **Primary Color**: Deep Purple (#4c1d95) to Neon Violet (#a855f7).
+- **Surface**: Dark Glassmorphism (blur, transparency, white/purple borders).
+- **Vibe**: Holographic, Futuristic, Premium.
+
 ## 3. Contract Integrity Rule
 Before implementing full logic, the API Contract (types/interfaces) **MUST** be defined and locked.
 - Frontend must build against the contract.

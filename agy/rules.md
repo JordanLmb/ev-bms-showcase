@@ -22,7 +22,12 @@ Before implementing full logic, the API Contract (types/interfaces) **MUST** be 
 - **Input Validation**: ALL API inputs must be validated (Zod/Yup) before processing.
 - **Dependency Audit**: Run `npm audit` before shipping any new feature.
 
-## 5. The Compounding Engineering Rule
+## 5. The Cross-Platform Persistence Rule
+*Learned from Session 1 (Shell Failures)*
+- **Scripting**: Prefer defined `npm run` scripts (in package.json) over raw shell commands to ensure cross-platform compatibility (Windows/Linux).
+- **Tooling**: Verify CLI tools (gh, docker, etc.) are installed before relying on them in workflows.
+
+## 6. The Compounding Engineering Rule
 After completion of any task feature or resolution of a significant bug:
 - The agent **MUST** propose a specific update to `agy/rules.md` or `VERIFICATION.md` to prevent recurrence of issues or to capture new best practices.
 - This analysis is a **REQUIRED** final step of the workflow.

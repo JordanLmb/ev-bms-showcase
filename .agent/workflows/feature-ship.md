@@ -19,10 +19,13 @@ This workflow orchestrates the "Failproof Loop" across multiple roles with Contr
 - [ ] **Assert**: Write the test case expecting the correct behavior.
 - [ ] **Verify Failure**: Run the test to confirm it fails (Red state).
 
-## 3. Frontend (Execute UI)
+## 3. Frontend (Execute UI - The Showcase)
 - [ ] **Check Rule**: Confirm `agy/rules.md` requires 21st.dev Magic MCP.
 - [ ] **Mock**: Use the *Contract* to create a mock data object.
-- [ ] **Generate**: Use Magic MCP to build the UI using the mock data.
+- [ ] **Generate 5**: Use Magic MCP to generate 5 distinct variants of the component (e.g., `CompVariantA`...`CompVariantE`).
+- [ ] **Showcase**: Mount all 5 variants on a temporary page (e.g., `/design-review`) or running Storybook.
+- [ ] **Visual Review**: Ask the user to open the page and select the winner (1-5).
+- [ ] **Finalize**: Delete the losers and refactor the winner into the main `Component.tsx`.
 
 ## 4. Backend (Execute Logic)
 - [ ] **Implement**: Write the API logic to satisfy the *Contract*.

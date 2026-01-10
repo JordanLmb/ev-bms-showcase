@@ -8,6 +8,7 @@ description: The Master Workflow for shipping features using the Failproof Devel
 This workflow orchestrates the "Failproof Loop" across multiple roles with Contract-First discipline.
 
 ## 1. Architect (Plan & Contract)
+- [ ] **Research**: Use **Context7 MCP** to research best practices/security for this specific feature.
 - [ ] **Analyze**: Read `agy/rules.md` and the user request.
 - [ ] **Define Contract**: Create/Update `types.ts` (or equivalent) to define the EXACT API shape.
 - [ ] **Plan**: Create `implementation_plan.md` referencing this contract.
@@ -31,3 +32,7 @@ This workflow orchestrates the "Failproof Loop" across multiple roles with Contr
 ## 5. Review & Learn (Validate)
 - [ ] **Present**: Show the user the results.
 - [ ] **Compounding Rule**: **REQUIRED** - Propose a one-line update to `VERIFICATION.md` or `agy/rules.md`.
+
+## 6. Publish (Context Preservation)
+- [ ] **Commit**: `git commit` the changes.
+- [ ] **PR**: Use **GitHub MCP** to create a PR (if on a team) OR push to branch.

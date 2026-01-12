@@ -1,28 +1,29 @@
-# VERIFICATION.md (The Quality Engine)
+# PROJECT VERIFICATION
 
-## Browser-First Verification (UI Tasks)
-- [ ] **Render Check**: Does the component render without crashing?
-- [ ] **Console check**: Are there any errors in the browser console?
-- [ ] **Responsiveness**: Does it look good on Mobile (375px), Tablet (768px), and Desktop (1440px)?
-- [ ] **Interaction**: Click all buttons and inputs. Do they respond as expected?
-- [ ] **Accessibility**: Are alt tags present? Is color contrast sufficient?
+## A. PRE-FLIGHT CHECKLIST (MANDATORY - Start of LAW 1)
+- [ ] **RULE ACKNOWLEDGMENT:** Read `agy/rules.md` using `view_file`. State: "Acknowledging Prime Directive."
+- [ ] **TOOL CHECK:** Confirm MCP servers (`magic`, `github`, `supabase`, `postgres`, `context7`) are connected.
+- [ ] **ENVIRONMENT CHECK:** Verify Node/npm, Git, and Docker are available.
 
-## Security Verification (Required for ALL Tasks)
-- [ ] **No Secrets**: Check `git status` to ensure no keys or `.env` files are staged.
-- [ ] **Input Sanitization**: Confirm all user inputs are sanitized/validated.
-- [ ] **Audit**: Run `npm audit` and ensure no high-severity vulnerabilities.
+## B. TECHNICAL SPECIFICS & TROUBLESHOOTING
+*Add specific fixes here as per LAW 6 (Knowledge Compounding).*
 
-## New API Endpoint Verification
-- [ ] **Unit Tests**: Run the specific test file for this endpoint. `npm test -- path/to/test`
-- [ ] **Curl Request**: Execute a curl request to the local server.
-    ```bash
-    curl -v http://localhost:PORT/api/path
-    ```
-- [ ] **Status Code**: Confirm 2xx status for success cases, 4xx/5xx for intended error cases.
-- [ ] **Logs**: Check application logs for stack traces or warnings.
+### 1. Windows/Shell Commands
+- **COMMAND:** Always use `npx.cmd` instead of `npx`.
+- **CHAINING:** Use `cmd /c "command1 && command2"` for command chains.
+- **DELETION:** Use `Remove-Item -Recurse -Force` in PowerShell.
 
-## Database Migration Verification
-- [ ] **Test Schema**: Run the migration on a test database first.
-- [ ] **Constraints**: Verify new columns/tables have correct types and constraints (NOT NULL, FK, etc).
-    - Run a sample SQL query to insert invalid data and confirm it fails.
-- [ ] **Rollback**: Attempt to roll back the migration and verify the schema returns to the previous state.
+### 2. Next.js Project Setup
+- **DIRECTORY:** Run `create-next-app` in an empty `temp` folder, then move contents to root.
+
+### 3. Testing (Jest)
+- **SETUP:** Ensure `jest`, `@types/jest`, and `ts-node` are installed as devDependencies.
+- **RUN:** Use `npm test` or `npx.cmd jest`.
+
+## C. FEATURE-SPECIFIC VERIFICATION
+
+### Feature: "Upload CSV and Display Chart"
+- [ ] **Backend Test:** API accepts CSV, returns parsed JSON. Test with `curl`.
+- [ ] **Frontend Test:** Chart library (Tremor/Recharts) renders with mock data.
+- [ ] **Integration Test:** Full flow: upload -> parse -> display. Browser agent takes a screenshot.
+- [ ] **UI Check:** Screenshot matches "Void Aesthetic" (dark purple, glassmorphism).

@@ -6,12 +6,13 @@ description: The Master Workflow for shipping features using the Failproof Devel
 
 ## 0. INITIATE & ACKNOWLEDGE
 - [ ] **STATE:** "Beginning Failproof Loop (LAW 1)."
-- [ ] **RULE CHECK:** Explicitly read `agy/rules.md` using `view_file`.
+- [ ] **RULE CHECK:** Explicitly read `resources/prime-directive.md` using `view_file`.
+- [ ] **KNOWLEDGE CHECK:** Explicitly read `resources/verification-db.md` using `view_file` to load known fixes.
 
 ## 1. ARCHITECT: Plan & Contract (LAW 1, LAW 3, LAW 7.1)
 - [ ] **RESEARCH:** Use **Context7 MCP** for best practices. Use **GitHub MCP** to check for similar code.
 - [ ] **STRATEGY GATE (LAW 7.1):** Present user choice: **"Cost-Effective Path"** or **"Full-Generation Path"** for UI. **WAIT for user selection.**
-- [ ] **DEFINE CONTRACT:** Create/update `contracts/feature.ts` with exact API/data shapes. **LOCK THIS FILE.**
+- [ ] **DEFINE CONTRACT:** Create/update `contracts/feature.ts` using the template in `resources/feature-contract.ts`. **LOCK THIS FILE.**
 - [ ] **PLAN:** Create `plan.md` referencing the contract and the chosen UI strategy.
 - [ ] **REVIEW GATE:** Present `plan.md` and `contracts/feature.ts` to user. **DO NOT PROCEED without explicit approval.**
 
@@ -33,7 +34,7 @@ description: The Master Workflow for shipping features using the Failproof Devel
 
 ## 5. VALIDATE & LEARN (LAW 1, LAW 6)
 - [ ] **FINAL VERIFICATION:** Run full test suite & linting. Use browser agent for a visual screenshot.
-- [ ] **COMPOUNDING (LAW 6):** Analyze the process. **Propose a specific, one-line update** to `VERIFICATION.md` with any new learnings.
+- [ ] **COMPOUNDING (LAW 6):** Analyze the process. **Propose a specific, one-line update** to `resources/verification-db.md` with any new learnings.
 - [ ] **PRESENT:** Show user: working feature, screenshot, test logs, and the proposed knowledge update.
 
 ## 6. SHIP (Tool Maximization - LAW 5)

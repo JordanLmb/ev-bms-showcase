@@ -200,7 +200,7 @@ export default function OpalPage() {
                 </div>
 
                 {/* Right Column: Console */}
-                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-[500px] lg:h-[705px]">
+                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-[500px] lg:h-[700px]">
                     <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800 flex-shrink-0">
                         <span className="text-slate-400">~/bms/test_output</span>
                         <div className="flex gap-1.5">

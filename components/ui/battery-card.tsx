@@ -43,18 +43,20 @@ export function BatteryCard({
             <div className="flex items-center justify-between w-full z-10 relative">
 
                 {/* Left: Status Text + Badge on same line */}
-                <div className="flex items-center gap-3">
-                    <h3 className="text-sm font-medium text-slate-400">BMS STATUS</h3>
-                    <div className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-sm transition-all duration-300", getStatusColor(status))}>
-                        {status === 'NORMAL' && <Activity className="w-3 h-3 mr-1.5" />}
-                        {status === 'WARNING' && <Activity className="w-3 h-3 mr-1.5" />}
-                        {status === 'CRITICAL' && <Activity className="w-3 h-3 mr-1.5" />}
+                <div className="flex items-center gap-1.5 sm:gap-3">
+                    <h3 className="text-[10px] sm:text-sm font-medium text-slate-400 whitespace-nowrap">BMS STATUS</h3>
+                    <div className={cn("inline-flex items-center px-1.5 py-0.5 sm:px-2.5 rounded-full text-[9px] sm:text-[10px] font-bold border shadow-sm transition-all duration-300 whitespace-nowrap", getStatusColor(status))}>
+                        {status === 'NORMAL' && <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-1.5" />}
+                        {status === 'WARNING' && <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-1.5" />}
+                        {status === 'CRITICAL' && <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-1.5" />}
                         {status}
                     </div>
                 </div>
 
                 {/* Right: Battery */}
-                <LiquidBattery soc={soc} status={status} />
+                <div className="scale-75 origin-right sm:scale-100">
+                    <LiquidBattery soc={soc} status={status} />
+                </div>
             </div>
 
             {/* Content: Big Metrics Centered (3 in a line) */}

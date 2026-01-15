@@ -14,7 +14,7 @@ interface VoltageChartProps {
 
 export function VoltageChart({ data }: VoltageChartProps) {
     return (
-        <div className="h-full w-full min-h-[300px]">
+        <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />

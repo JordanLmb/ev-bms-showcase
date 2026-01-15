@@ -9,11 +9,12 @@
 *Add specific fixes here as per LAW 6 (Knowledge Compounding).*
 
 ### 1. Windows/Shell Commands
-- **COMMAND:** Always use `npx.cmd` instead of `npx`.
-- **CHAINING:** Use `cmd /c "command1 && command2"` for command chains.
+- **COMMAND:** Always use `npx.cmd` or `npm.cmd` explicitly if generic commands fail.
+- **CHAINING:** PowerShell does NOT support `&&`. Use `;` for sequential execution, or wrap in `cmd /c "cmd1 && cmd2"`.
 - **DELETION:** Use `Remove-Item -Recurse -Force` in PowerShell.
-- **SCRIPT ERRORS:** If you see "running scripts is disabled" errors, wrap npm commands with `cmd /c "npm ..."` to bypass PowerShell restrictions.
-- **PORT CLEANUP:** Before running `npm run dev`, ALWAYS kill port 3000 first: `npx.cmd kill-port 3000`. This prevents stuck processes.
+- **SECURITY/PERMS:** If you hit `PSSecurityException` or "running scripts is disabled":
+    - Bypass by running: `cmd /c "npm run dev"`
+    - Avoid `kill-port` if it triggers script blocks; use `taskkill /F /IM node.exe` (carefully) or just retry `npm run dev`.
 
 ### 2. Next.js Project Setup
 - **DIRECTORY:** Run `create-next-app` in an empty `temp` folder, then move contents to root.
@@ -21,6 +22,11 @@
 ### 3. Testing (Jest)
 - **SETUP:** Ensure `jest`, `@types/jest`, and `ts-node` are installed as devDependencies.
 - **RUN:** Use `npm test` or `npx.cmd jest`.
+
+### 4. Pyodide & Python Testing
+- **SHADOW TEST:** To verify Python logic intended for Pyodide without complex mocking, write a standard Python unit test (`unittest`) and run it locally with `python tests/test_name.py`. This confirms the logic works before integrating with WASM.
+- **VERSION MISMATCH:** If you see `Pyodide version does not match` in the browser console, ensure the `indexURL` in the worker matches the version installed via npm. Check with `npm list pyodide` and update the CDN URL accordingly (e.g., `https://cdn.jsdelivr.net/pyodide/v0.29.1/full/`).
+- **WORKER FETCH URLS:** Web Workers cannot resolve relative URLs like `/path/to/file`. Use `${self.location.origin}/path/to/file` to construct absolute URLs for fetch calls inside workers.
 
 ## C. FEATURE-SPECIFIC VERIFICATION
 

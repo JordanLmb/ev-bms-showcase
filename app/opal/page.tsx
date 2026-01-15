@@ -143,9 +143,9 @@ export default function OpalPage() {
                                 {/* Sabotage Button - Special Demo Feature */}
                                 <button
                                     onClick={() => updateControl({ injectFault: 'SABOTAGE' })}
-                                    className="mt-2 w-full flex items-center justify-center px-3 py-2 bg-purple-500/20 border-2 border-dashed border-purple-500/40 rounded-lg text-purple-300 hover:bg-purple-500/30 transition-all text-xs font-bold animate-pulse"
+                                    className="mt-2 w-full flex items-center justify-center px-3 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg text-purple-400 hover:bg-purple-500/20 transition-all text-xs font-bold animate-pulse"
                                 >
-                                    💀 SABOTAGE (Disable Safety - Tests Will FAIL)
+                                    💀 SABOTAGE (Disable Safety)
                                 </button>
                             </div>
 
@@ -205,7 +205,7 @@ export default function OpalPage() {
                 </div>
 
                 {/* Right Column: Console */}
-                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col max-h-[600px]">
+                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-[500px] lg:h-auto">
                     <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800 flex-shrink-0">
                         <span className="text-slate-400">~/bms/test_output</span>
                         <div className="flex gap-1.5">

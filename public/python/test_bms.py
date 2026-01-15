@@ -328,12 +328,14 @@ def test_voltage_boundary_conditions(runner: BMSTestRunner):
 # MAIN RUNNER
 # ============================================================================
 
-def run_tests():
     """
     Execute the full test suite and return results.
     Called by the Pyodide worker.
     """
-    runner = BMSTestRunner(bms)
+    # Create ISOLATED instance for testing
+    # This ensures tests don't interfere with the live visual simulation
+    test_instance = BMS()
+    runner = BMSTestRunner(test_instance)
     
     # Safety Tests
     test_overvoltage_protection(runner)

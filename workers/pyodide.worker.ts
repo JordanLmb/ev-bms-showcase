@@ -169,6 +169,9 @@ json.dumps(run_tests())
                     level: allPassed ? 'success' : 'error'
                 }
             });
+
+            // Signal completion to release frontend lock
+            ctx.postMessage({ type: 'TEST_COMPLETE' });
         }
     } catch (err) {
         console.error("Worker Error:", err);

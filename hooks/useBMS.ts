@@ -108,6 +108,9 @@ export const useBMS = create<BMSStore>((set, get) => ({
                     `${passed ? '✅' : '❌'} ${name}: ${message}`,
                     passed ? 'success' : 'error'
                 );
+            } else if (type === 'TEST_COMPLETE') {
+                // Release lock immediately when worker finishes
+                set({ isTestRunning: false });
             }
         };
 
@@ -153,7 +156,11 @@ export const useBMS = create<BMSStore>((set, get) => ({
         addLog('Running BMS test suite...', 'info');
         worker.postMessage({ type: 'RUN_TESTS' });
 
-        // Reset flag after tests complete (3 second timeout)
-        setTimeout(() => set({ isTestRunning: false }), 3000);
+        // Safety fallback: Reset flag after 10s if logic freezes
+        setTimeout(() => {
+            if (get().isTestRunning) {
+                set({ isTestRunning: false });
+            }
+        }, 10000);
     }
 }));

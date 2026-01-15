@@ -91,7 +91,7 @@ export const useBMS = create<BMSStore>((set, get) => ({
 
                     set({
                         state: newState,
-                        simulationTime: currentTime + 0.016 // ~60fps
+                        simulationTime: currentTime + 0.033 // ~30fps, matches worker
                     });
                 }
             } else if (type === 'READY') {

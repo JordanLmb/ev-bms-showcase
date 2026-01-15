@@ -147,6 +147,8 @@ class BMS:
                 # Full system reset
                 self.faults = []
                 self.contactors_closed = True
+                self.load_amps = 0  # Reset load to prevent re-fault
+                self.charger_amps = 0
                 for c in self.cells: 
                     c.voltage = 3.7
                     c.temp = 25.0

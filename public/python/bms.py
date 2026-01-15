@@ -89,20 +89,19 @@ class BMS:
             self.contactors_closed = False
         
         if self.contactors_closed:
-            for cell in self.cells:
-                cell.update(net_current, dt)
-                
-            # Balancing Logic (Simple passive)
+            # Balancing Logic (Simple passive) - Check BEFORE update modifies voltages
             if self.charger_amps > 0 and max_voltage > 4.0:
                for cell in self.cells:
                    if cell.voltage > min_voltage + 0.05:
                        cell.is_balancing = True
-                       # Balancing bleeds current (simulate by slightly reducing effective charging current for this cell)
-                       # For viz only
                    else:
                        cell.is_balancing = False
             else:
                 for cell in self.cells: cell.is_balancing = False
+            
+            # Update cell physics
+            for cell in self.cells:
+                cell.update(net_current, dt)
 
     def update_control(self, control_json):
         data = json.loads(control_json)

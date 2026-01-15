@@ -14,7 +14,7 @@ interface VoltageChartProps {
 
 export function VoltageChart({ data }: VoltageChartProps) {
     return (
-        <div className="h-[200px] w-full">
+        <div className="h-full w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -56,6 +56,7 @@ export function VoltageChart({ data }: VoltageChartProps) {
                         stroke="#a855f7"
                         strokeWidth={2}
                         dot={false}
+                        isAnimationActive={false}
                         name="Pack Voltage"
                     />
                     <Line
@@ -65,6 +66,7 @@ export function VoltageChart({ data }: VoltageChartProps) {
                         stroke="#f97316"
                         strokeWidth={2}
                         dot={false}
+                        isAnimationActive={false}
                         name="Pack Temp"
                     />
                 </LineChart>

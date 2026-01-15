@@ -58,25 +58,25 @@ export function BatteryCard({
             </div>
 
             {/* Content: Big Metrics Centered (3 in a line) */}
-            <div className="w-full grid grid-cols-3 gap-4 z-10 relative px-2 mb-2">
-                <div className="space-y-2 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
-                    <div className="flex items-center justify-center text-[10px] text-slate-500 font-mono uppercase tracking-wider">
-                        <Gauge className="mr-1.5 h-3 w-3" /> Volt
+            <div className="w-full grid grid-cols-3 gap-2 sm:gap-4 z-10 relative px-1 sm:px-2 mb-2">
+                <div className="space-y-1 sm:space-y-2 flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                    <div className="flex items-center justify-center text-[8px] sm:text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+                        <Gauge className="mr-1 sm:mr-1.5 h-2.5 w-2.5 sm:h-3 sm:w-3" /> Volt
                     </div>
-                    <div className="text-2xl font-mono text-white tracking-tight">{voltage.toFixed(2)}<span className="text-slate-600 text-sm ml-0.5">V</span></div>
+                    <div className="text-lg sm:text-2xl font-mono text-white tracking-tight">{voltage.toFixed(2)}<span className="text-slate-600 text-[10px] sm:text-sm ml-0.5">V</span></div>
                 </div>
-                <div className="space-y-2 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
-                    <div className="flex items-center justify-center text-[10px] text-slate-500 font-mono uppercase tracking-wider">
-                        <Zap className="mr-1.5 h-3 w-3" /> Amps
+                <div className="space-y-1 sm:space-y-2 flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                    <div className="flex items-center justify-center text-[8px] sm:text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+                        <Zap className="mr-1 sm:mr-1.5 h-2.5 w-2.5 sm:h-3 sm:w-3" /> Amps
                     </div>
-                    <div className="text-2xl font-mono text-white tracking-tight">{current.toFixed(1)}<span className="text-slate-600 text-sm ml-0.5">A</span></div>
+                    <div className="text-lg sm:text-2xl font-mono text-white tracking-tight">{current.toFixed(1)}<span className="text-slate-600 text-[10px] sm:text-sm ml-0.5">A</span></div>
                 </div>
-                <div className="space-y-2 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
-                    <div className="flex items-center justify-center text-[10px] text-slate-500 font-mono uppercase tracking-wider">
-                        <Thermometer className="mr-1.5 h-3 w-3" /> Temp
+                <div className="space-y-1 sm:space-y-2 flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                    <div className="flex items-center justify-center text-[8px] sm:text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+                        <Thermometer className="mr-1 sm:mr-1.5 h-2.5 w-2.5 sm:h-3 sm:w-3" /> Temp
                     </div>
-                    <div className={cn("text-2xl font-mono tracking-tight transition-colors", temp > 45 ? "text-rose-400" : "text-white")}>
-                        {temp.toFixed(1)}<span className="text-slate-600 text-sm ml-0.5">°C</span>
+                    <div className={cn("text-lg sm:text-2xl font-mono tracking-tight transition-colors", temp > 45 ? "text-rose-400" : "text-white")}>
+                        {temp.toFixed(1)}<span className="text-slate-600 text-[10px] sm:text-sm ml-0.5">°C</span>
                     </div>
                 </div>
             </div>

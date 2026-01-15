@@ -16,7 +16,7 @@ export function VoltageChart({ data }: VoltageChartProps) {
     return (
         <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
+                <LineChart data={data} margin={{ top: 5, right: -10, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis
                         dataKey="time"
@@ -26,6 +26,7 @@ export function VoltageChart({ data }: VoltageChartProps) {
                     />
                     <YAxis
                         yAxisId="voltage"
+                        width={30}
                         stroke="#a855f7"
                         tick={{ fontSize: 10 }}
                         domain={[12, 18]}
@@ -34,6 +35,7 @@ export function VoltageChart({ data }: VoltageChartProps) {
                     <YAxis
                         yAxisId="temp"
                         orientation="right"
+                        width={30}
                         stroke="#f97316"
                         tick={{ fontSize: 10 }}
                         domain={[20, 80]}

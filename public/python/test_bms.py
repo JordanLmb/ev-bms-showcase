@@ -328,6 +328,7 @@ def test_voltage_boundary_conditions(runner: BMSTestRunner):
 # MAIN RUNNER
 # ============================================================================
 
+def run_tests():
     """
     Execute the full test suite and return results.
     Called by the Pyodide worker.

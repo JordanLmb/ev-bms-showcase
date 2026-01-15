@@ -80,7 +80,7 @@ async function initPyodide() {
                     console.error("Pyodide Tick Error:", e);
                 }
             }
-        }, 16);
+        }, 100); // 10Hz (was 16ms/60Hz - reduced for performance)
 
     } catch (error) {
         console.error("Failed to load Pyodide:", error);

@@ -28,7 +28,7 @@ export const SimulationControlSchema = z.object({
     loadAmps: z.number().default(0),
     chargerAmps: z.number().default(0),
     fanDuty: z.number().min(0).max(100).default(0),
-    injectFault: z.enum(['NONE', 'OVERVOLTAGE', 'OVERTEMP', 'UNDERVOLTAGE', 'SHORT_CIRCUIT']).optional(),
+    injectFault: z.enum(['NONE', 'OVERVOLTAGE', 'OVERTEMP', 'UNDERVOLTAGE', 'SHORT_CIRCUIT', 'SABOTAGE']).optional(),
 });
 
 export type SimulationControl = z.infer<typeof SimulationControlSchema>;

@@ -39,6 +39,7 @@ class BMS:
         self.charger_amps = 0.0
         self.load_amps = 0.0
         self.fan_duty = 0.0
+        self.sabotage_mode = False  # When True, disables overtemp protection (for demo)
 
     def get_state_json(self):
         pack_voltage = sum(c.voltage for c in self.cells)
@@ -79,7 +80,8 @@ class BMS:
             self.faults.append("OVERVOLTAGE")
         if min_voltage < 2.5:
             self.faults.append("UNDERVOLTAGE")
-        if max_temp > 60.0:
+        # Overtemp protection - DISABLED when sabotage_mode is True (for demo)
+        if max_temp > 60.0 and not self.sabotage_mode:
             self.faults.append("OVERTEMP")
 
         if self.faults:
@@ -143,12 +145,18 @@ class BMS:
                 # Short circuit - massive current, all cells affected
                 for c in self.cells:
                     c.temp += 30.0  # All cells heat up
+            elif fault == 'SABOTAGE':
+                # DEMO FEATURE: Disable overtemp protection to show test failures
+                self.sabotage_mode = True
+                # Also inject an overtemp to trigger the broken state
+                self.cells[0].temp = 80.0
             elif fault == 'NONE':
                 # Full system reset
                 self.faults = []
                 self.contactors_closed = True
                 self.load_amps = 0  # Reset load to prevent re-fault
                 self.charger_amps = 0
+                self.sabotage_mode = False  # Restore safety systems
                 for c in self.cells: 
                     c.voltage = 3.7
                     c.temp = 25.0

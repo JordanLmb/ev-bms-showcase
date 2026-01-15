@@ -140,6 +140,13 @@ export default function OpalPage() {
                                         SHORT
                                     </button>
                                 </div>
+                                {/* Sabotage Button - Special Demo Feature */}
+                                <button
+                                    onClick={() => updateControl({ injectFault: 'SABOTAGE' })}
+                                    className="mt-2 w-full flex items-center justify-center px-3 py-2 bg-purple-500/20 border-2 border-dashed border-purple-500/40 rounded-lg text-purple-300 hover:bg-purple-500/30 transition-all text-xs font-bold animate-pulse"
+                                >
+                                    💀 SABOTAGE (Disable Safety - Tests Will FAIL)
+                                </button>
                             </div>
 
                             {/* Action Buttons */}

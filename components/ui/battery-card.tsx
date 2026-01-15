@@ -3,7 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 // Replaced lucide-react Laptop with generic icon or just omit
-import { Zap, Activity, Thermometer, Gauge } from "lucide-react"
+import { Zap, Activity, Thermometer, Gauge, Battery } from "lucide-react"
 
 interface BatteryCardProps extends React.HTMLAttributes<HTMLDivElement> {
     voltage: number
@@ -64,11 +64,13 @@ export function BatteryCard({
                         </svg>
                         <span className="text-xs font-bold text-white">{Math.round(soc)}%</span>
                     </div>
-                    <span className="text-[9px] font-mono text-slate-500 tracking-wider">BATTERY</span>
+                    <div className="flex items-center text-[9px] font-mono text-slate-500 tracking-wider">
+                        <Battery className="w-3 h-3 mr-1" /> BATTERY
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                     <div className="flex items-center text-xs text-slate-500">
                         <Gauge className="mr-1 h-3 w-3" /> VOLTAGE
@@ -77,17 +79,17 @@ export function BatteryCard({
                 </div>
                 <div className="space-y-2">
                     <div className="flex items-center text-xs text-slate-500">
+                        <Zap className="mr-1 h-3 w-3" /> CURRENT
+                    </div>
+                    <div className="text-xl font-mono text-white">{current.toFixed(1)}A</div>
+                </div>
+                <div className="space-y-2">
+                    <div className="flex items-center text-xs text-slate-500">
                         <Thermometer className="mr-1 h-3 w-3" /> TEMP
                     </div>
                     <div className={cn("text-xl font-mono", temp > 45 ? "text-rose-400" : "text-white")}>
                         {temp.toFixed(1)}°C
                     </div>
-                </div>
-                <div className="space-y-2">
-                    <div className="flex items-center text-xs text-slate-500">
-                        <Zap className="mr-1 h-3 w-3" /> CURRENT
-                    </div>
-                    <div className="text-xl font-mono text-white">{current.toFixed(1)}A</div>
                 </div>
             </div>
 

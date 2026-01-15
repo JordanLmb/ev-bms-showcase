@@ -336,6 +336,12 @@ def run_tests():
     # Create ISOLATED instance for testing
     # This ensures tests don't interfere with the live visual simulation
     test_instance = BMS()
+    
+    # CRITICAL: Sync Sabotage Mode from global simulation
+    # If the user has disabled safety (Sabotage), the tests MUST fail
+    if 'bms' in globals() and bms.sabotage_mode:
+        test_instance.sabotage_mode = True
+        
     runner = BMSTestRunner(test_instance)
     
     # Safety Tests

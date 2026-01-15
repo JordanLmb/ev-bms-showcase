@@ -113,13 +113,15 @@ export const useBMS = create<BMSStore>((set, get) => ({
     },
 
     updateControl: (control) => {
-        const { worker, addLog } = get();
+        const { worker, addLog, runTests } = get();
         if (worker) {
             worker.postMessage({ type: 'UPDATE_CONTROL', payload: control });
 
             // Log control changes
             if (control.injectFault && control.injectFault !== 'NONE') {
                 addLog(`⚠️ Fault Injected: ${control.injectFault}`, 'warn');
+                // Auto-run tests after fault injection (PRD requirement)
+                setTimeout(() => runTests(), 500);
             } else if (control.injectFault === 'NONE') {
                 addLog('🔄 System Reset', 'info');
             }

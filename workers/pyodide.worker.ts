@@ -15,11 +15,11 @@ async function initPyodide() {
         });
 
         // Fetch BMS simulation logic
-        const bmsResponse = await fetch(`${self.location.origin}/python/bms.py`);
+        const bmsResponse = await fetch(`${self.location.origin}/bms/python/bms.py`);
         const bmsCode = await bmsResponse.text();
 
         // Fetch professional test suite
-        const testResponse = await fetch(`${self.location.origin}/python/test_bms.py`);
+        const testResponse = await fetch(`${self.location.origin}/bms/python/test_bms.py`);
         const testCode = await testResponse.text();
 
         // Load both modules

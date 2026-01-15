@@ -9,7 +9,7 @@ This project simulates a **Battery Management System (BMS)** in a web browser. I
 
 ## 🚀 Live Demo
 
-**Access the Simulator:** `http://localhost:3000/bms`
+**Access the Simulator:** `https://jordanlmb.com/bms`
 
 Key Features:
 - **Voltage/Temp Telemetry:** Real-time 60Hz physics simulation.
@@ -53,6 +53,37 @@ This application mimics a real embedded system architecture:
     - A dedicated Python script (`test_bms.py`) running `pytest`-style assertions.
     - runs **automatically** whenever a fault is injected to verify system integrity.
     - Decoupled from the main simulation to verify logic without resetting the visual state.
+
+## 🛡️ QA Automation & HIL Testing Architecture
+
+This simulator was designed to demonstrate **advanced QA Automation skills** relevant to Hardware-in-the-Loop environments. The testing framework (located in `public/python/test_bms.py`) mimics a professional embedded testing workflow.
+
+### 1. Custom Python Test Runner
+Instead of relying on standard web assertion libraries, this project implements a **custom Python Test Runner** (`BMSTestRunner` class) that runs *inside* the browser's Web Worker. This demonstrates:
+- **Pytest-style Assertions:** `assert_equals`, `assert_in`, `assert_true`.
+- **Setup/Teardown Fixtures:** Ensures a known-good state (Voltage=3.7V, Temp=25°C) before every test.
+- **Reporting:** Generates structured JSON reports with Pass/Fail rates and failure messages.
+
+### 2. HIL Simulation (Physics-First Testing)
+The tests do not just check static values; they simulate the passage of time and physics response.
+* **Example:** The `Overvoltage Protection` test doesn't just check a flag. It:
+    1.  Sets a cell to 4.5V (Logic Input).
+    2.  Advances the simulation clock by 100ms (`runner.bms.tick(0.1)`).
+    3.  Verifies the BMS controller responded by opening the contactors (Logic Output).
+
+### 3. Test Isolation Strategy
+To prevent "Flaky Tests" caused by shared state:
+- The main visual simulation runs on one global `BMS()` instance.
+- **Every time you click 'Run Tests'**, the worker instantiates a **fresh, isolated `BMS()` instance** specifically for the test suite.
+- This ensures that ongoing visual interactions (like user injected faults) do not interfere with the automated regression suite, preserving test reliability.
+
+### 4. "Sabotage Mode" (Negative Testing)
+A unique feature of this project is the **Sabotage** button.
+- **Concept:** It intentionally breaks the BMS safety logic (disabling overvoltage/overtemp checks).
+- **Goal:** To verify that the **Test Suite correctly catches the failure**.
+- When Sabotage is ON, the tests *must* fail. This validates the "Watchdog" function of the QA suite itself.
+
+---
 
 ## 💻 Running Locally
 

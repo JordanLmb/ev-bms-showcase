@@ -29,12 +29,52 @@ async function initPyodide() {
         // Notify main thread
         ctx.postMessage({ type: 'READY' });
 
+        // Track previous state for change detection
+        let prevFaults: string[] = [];
+        let prevContactors = true;
+
         // Start the simulation loop (60Hz)
         intervalId = setInterval(() => {
             if (pyodide) {
                 try {
                     const stateJson = pyodide.runPython(`tick(16.6)`);
                     const state = JSON.parse(stateJson);
+
+                    // Detect new faults and log them
+                    const newFaults = state.faults.filter((f: string) => !prevFaults.includes(f));
+                    for (const fault of newFaults) {
+                        let message = '';
+                        switch (fault) {
+                            case 'OVERVOLTAGE':
+                                message = `⚡ FAULT: Cell voltage ${Math.max(...state.cells.map((c: any) => c.voltage)).toFixed(2)}V exceeds 4.25V limit`;
+                                break;
+                            case 'UNDERVOLTAGE':
+                                message = `⚡ FAULT: Cell voltage ${Math.min(...state.cells.map((c: any) => c.voltage)).toFixed(2)}V below 2.5V limit`;
+                                break;
+                            case 'OVERTEMP':
+                                message = `⚡ FAULT: Temperature ${Math.max(...state.cells.map((c: any) => c.temp)).toFixed(1)}°C exceeds 60°C limit`;
+                                break;
+                        }
+                        if (message) {
+                            ctx.postMessage({ type: 'LOG', payload: { message, level: 'error' } });
+                        }
+                    }
+
+                    // Log HV disconnect
+                    if (prevContactors && !state.contactorsClosed && state.faults.length > 0) {
+                        ctx.postMessage({
+                            type: 'LOG',
+                            payload: {
+                                message: '🔌 SAFETY SHUTDOWN: HV Contactors OPENED',
+                                level: 'warn'
+                            }
+                        });
+                    }
+
+                    // Update previous state
+                    prevFaults = [...state.faults];
+                    prevContactors = state.contactorsClosed;
+
                     ctx.postMessage({ type: 'TICK', payload: state });
                 } catch (e) {
                     console.error("Pyodide Tick Error:", e);

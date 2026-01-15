@@ -166,8 +166,8 @@ export default function OpalPage() {
           </div>
 
           {/* Live Charts */}
-          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6">
-            <h3 className="text-sm font-medium text-slate-400 mb-4 font-mono">LIVE TELEMETRY</h3>
+          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-3 sm:p-6">
+            <h3 className="text-xs sm:text-sm font-medium text-slate-400 mb-2 sm:mb-4 font-mono">LIVE TELEMETRY</h3>
             <VoltageChart data={history} />
           </div>
 

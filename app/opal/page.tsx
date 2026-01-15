@@ -88,83 +88,62 @@ export default function OpalPage() {
                         />
 
                         {/* Control Panel */}
-                        <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6 backdrop-blur-xl flex flex-col justify-between">
+                        <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4 backdrop-blur-xl flex flex-col gap-3">
                             <div>
-                                <h3 className="text-sm font-medium text-slate-400 mb-4 flex items-center">
-                                    <Activity className="w-4 h-4 mr-2" /> SIMULATION CONTROL
+                                <h3 className="text-xs font-medium text-slate-400 mb-2 flex items-center justify-between">
+                                    <span className="flex items-center"><Activity className="w-3 h-3 mr-1" /> CONTROLS</span>
+                                    <span className="text-purple-400 font-mono text-xs">{loadCurrent}A LOAD</span>
                                 </h3>
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-xs">
-                                        <label className="text-slate-500">LOAD CURRENT</label>
-                                        <span className="text-purple-400 font-mono">{loadCurrent}A</span>
-                                    </div>
-                                    <input
-                                        type="range" min="0" max="50" step="5"
-                                        value={loadCurrent}
-                                        className="w-full accent-purple-500"
-                                        onChange={(e) => handleLoadChange(parseFloat(e.target.value))}
-                                    />
+                                <input
+                                    type="range" min="0" max="50" step="5"
+                                    value={loadCurrent}
+                                    className="w-full accent-purple-500 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                                    onChange={(e) => handleLoadChange(parseFloat(e.target.value))}
+                                />
+                            </div>
+
+                            {/* Fault Injection - Compact Grid */}
+                            <div>
+                                <label className="text-[10px] text-slate-500 mb-1 block uppercase tracking-wider">Inject Faults</label>
+                                <div className="grid grid-cols-4 gap-1.5">
+                                    <button onClick={() => updateControl({ injectFault: 'OVERTEMP' })} className="py-1.5 bg-orange-500/10 border border-orange-500/20 rounded text-orange-400 hover:bg-orange-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Overheat">
+                                        <Thermometer className="w-3 h-3" /> TEMP
+                                    </button>
+                                    <button onClick={() => updateControl({ injectFault: 'OVERVOLTAGE' })} className="py-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded text-yellow-400 hover:bg-yellow-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Overvoltage">
+                                        <Zap className="w-3 h-3" /> VOLT
+                                    </button>
+                                    <button onClick={() => updateControl({ injectFault: 'UNDERVOLTAGE' })} className="py-1.5 bg-blue-500/10 border border-blue-500/20 rounded text-blue-400 hover:bg-blue-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Undervoltage">
+                                        <BatteryLow className="w-3 h-3" /> LOW
+                                    </button>
+                                    <button onClick={() => updateControl({ injectFault: 'SHORT_CIRCUIT' })} className="py-1.5 bg-red-500/10 border border-red-500/20 rounded text-red-400 hover:bg-red-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Short Circuit">
+                                        <AlertTriangle className="w-3 h-3" /> SHORT
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* Fault Injection Buttons */}
-                            <div className="mt-4">
-                                <label className="text-xs text-slate-500 mb-2 block">FAULT INJECTION</label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={() => updateControl({ injectFault: 'OVERTEMP' })}
-                                        className="flex items-center justify-center px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all text-xs font-medium"
-                                    >
-                                        <Thermometer className="w-3 h-3 mr-1" />
-                                        OVERHEAT
-                                    </button>
-                                    <button
-                                        onClick={() => updateControl({ injectFault: 'OVERVOLTAGE' })}
-                                        className="flex items-center justify-center px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-400 hover:bg-yellow-500/20 transition-all text-xs font-medium"
-                                    >
-                                        <Zap className="w-3 h-3 mr-1" />
-                                        OVERCHARGE
-                                    </button>
-                                    <button
-                                        onClick={() => updateControl({ injectFault: 'UNDERVOLTAGE' })}
-                                        className="flex items-center justify-center px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 hover:bg-blue-500/20 transition-all text-xs font-medium"
-                                    >
-                                        <BatteryLow className="w-3 h-3 mr-1" />
-                                        DEEP DISCH
-                                    </button>
-                                    <button
-                                        onClick={() => updateControl({ injectFault: 'SHORT_CIRCUIT' })}
-                                        className="flex items-center justify-center px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/20 transition-all text-xs font-medium"
-                                    >
-                                        <AlertTriangle className="w-3 h-3 mr-1" />
-                                        SHORT
-                                    </button>
-                                </div>
-                                {/* Sabotage Button - Special Demo Feature */}
+                            {/* Actions & Sabotage */}
+                            <div className="flex gap-2 mt-1">
                                 <button
                                     onClick={() => updateControl({ injectFault: 'SABOTAGE' })}
-                                    className="mt-2 w-full flex items-center justify-center px-3 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg text-purple-400 hover:bg-purple-500/20 transition-all text-xs font-bold animate-pulse"
+                                    className="flex-1 px-3 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg text-purple-400 hover:bg-purple-500/20 transition-all text-[10px] font-bold flex items-center justify-center tracking-wider"
+                                    title="Disable safety features to demonstrate test failure"
                                 >
-                                    💀 SABOTAGE (Disable Safety)
+                                    SABOTAGE
                                 </button>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="mt-4 grid grid-cols-2 gap-2">
                                 <button
                                     onClick={() => { updateControl({ injectFault: 'NONE' }); setLoadCurrent(0); }}
-                                    className="flex items-center justify-center px-3 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/20 transition-all text-xs font-bold"
+                                    className="w-9 flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/20 transition-all"
+                                    title="Reset System"
                                 >
-                                    <PlayCircle className="w-4 h-4 mr-1" />
-                                    RESET
+                                    <PlayCircle className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={runTests}
                                     disabled={!isReady}
-                                    className="flex items-center justify-center px-3 py-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400 hover:bg-indigo-500/20 transition-all text-xs font-bold disabled:opacity-50"
+                                    className="w-9 flex items-center justify-center bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400 hover:bg-indigo-500/20 transition-all disabled:opacity-50"
+                                    title="Run Tests Manually"
                                 >
-                                    <FlaskConical className="w-4 h-4 mr-1" />
-                                    RUN TESTS
+                                    <FlaskConical className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>

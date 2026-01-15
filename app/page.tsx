@@ -58,7 +58,7 @@ export default function OpalPage() {
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-4">
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${isReady ? 'bg-emerald-900/20 border-emerald-500/30' : 'bg-slate-900 border-slate-800'}`}>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${isReady ? 'bg-slate-900 border-slate-800' : 'bg-slate-900 border-slate-800'}`}>
             <div className={`h-2 w-2 rounded-full ${isReady ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' : 'bg-amber-500 animate-pulse'}`} />
             <span className="text-xs font-mono text-slate-300">
               {isReady ? 'PYODIDE READY' : 'LOADING...'}

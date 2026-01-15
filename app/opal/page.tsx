@@ -102,21 +102,37 @@ export default function OpalPage() {
                                 />
                             </div>
 
-                            {/* Fault Injection - Compact Grid */}
+                            {/* Fault Injection - Grid */}
                             <div>
                                 <label className="text-[10px] text-slate-500 mb-1 block uppercase tracking-wider">Inject Faults</label>
-                                <div className="grid grid-cols-4 gap-1.5">
-                                    <button onClick={() => updateControl({ injectFault: 'OVERTEMP' })} className="py-1.5 bg-orange-500/10 border border-orange-500/20 rounded text-orange-400 hover:bg-orange-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Overheat">
-                                        <Thermometer className="w-3 h-3" /> TEMP
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'OVERTEMP' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <Thermometer className="w-3 h-3 mr-1" />
+                                        OVERHEAT
                                     </button>
-                                    <button onClick={() => updateControl({ injectFault: 'OVERVOLTAGE' })} className="py-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded text-yellow-400 hover:bg-yellow-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Overvoltage">
-                                        <Zap className="w-3 h-3" /> VOLT
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'OVERVOLTAGE' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-400 hover:bg-yellow-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <Zap className="w-3 h-3 mr-1" />
+                                        OVERCHARGE
                                     </button>
-                                    <button onClick={() => updateControl({ injectFault: 'UNDERVOLTAGE' })} className="py-1.5 bg-blue-500/10 border border-blue-500/20 rounded text-blue-400 hover:bg-blue-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Undervoltage">
-                                        <BatteryLow className="w-3 h-3" /> LOW
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'UNDERVOLTAGE' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 hover:bg-blue-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <BatteryLow className="w-3 h-3 mr-1" />
+                                        DEEP DISCH
                                     </button>
-                                    <button onClick={() => updateControl({ injectFault: 'SHORT_CIRCUIT' })} className="py-1.5 bg-red-500/10 border border-red-500/20 rounded text-red-400 hover:bg-red-500/20 text-[10px] font-bold flex flex-col items-center justify-center gap-0.5" title="Short Circuit">
-                                        <AlertTriangle className="w-3 h-3" /> SHORT
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'SHORT_CIRCUIT' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <AlertTriangle className="w-3 h-3 mr-1" />
+                                        SHORT
                                     </button>
                                 </div>
                             </div>
@@ -184,7 +200,7 @@ export default function OpalPage() {
                 </div>
 
                 {/* Right Column: Console */}
-                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-[500px] lg:h-auto">
+                <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-[500px] lg:h-[710px]">
                     <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800 flex-shrink-0">
                         <span className="text-slate-400">~/bms/test_output</span>
                         <div className="flex gap-1.5">

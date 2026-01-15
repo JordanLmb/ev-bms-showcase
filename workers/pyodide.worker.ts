@@ -33,11 +33,12 @@ async function initPyodide() {
         let prevFaults: string[] = [];
         let prevContactors = true;
 
-        // Start the simulation loop (60Hz)
+        // Start the simulation loop (30Hz for smooth real-time visualization)
         intervalId = setInterval(() => {
             if (pyodide) {
                 try {
-                    const stateJson = pyodide.runPython(`tick(16.6)`);
+                    // Sync physics with real time: 33ms step for 30Hz
+                    const stateJson = pyodide.runPython(`tick(33)`);
                     const state = JSON.parse(stateJson);
 
                     // Detect new faults and log them
@@ -80,7 +81,7 @@ async function initPyodide() {
                     console.error("Pyodide Tick Error:", e);
                 }
             }
-        }, 100); // 10Hz (was 16ms/60Hz - reduced for performance)
+        }, 33); // 30Hz (33ms)
 
     } catch (error) {
         console.error("Failed to load Pyodide:", error);

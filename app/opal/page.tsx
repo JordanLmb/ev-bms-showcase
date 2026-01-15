@@ -1,14 +1,15 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useBMS } from "@/hooks/useBMS"
 import { BatteryCard } from "@/components/ui/battery-card"
 import { VoltageChart } from "@/components/ui/voltage-chart"
-import { Activity, Power, AlertTriangle, PlayCircle, FlaskConical } from "lucide-react"
+import { Activity, Power, AlertTriangle, PlayCircle, FlaskConical, Zap, Thermometer, BatteryLow } from "lucide-react"
 
 export default function OpalPage() {
     const { state, history, logs, isReady, initWorker, updateControl, runTests } = useBMS()
     const consoleRef = useRef<HTMLDivElement>(null)
+    const [loadCurrent, setLoadCurrent] = useState(0)
 
     useEffect(() => {
         initWorker()
@@ -30,6 +31,20 @@ export default function OpalPage() {
         }
     }
 
+    // Cell health color based on temp and voltage
+    const getCellColor = (temp: number, voltage: number) => {
+        if (temp > 60) return 'border-red-500 bg-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.5)]'
+        if (temp > 45) return 'border-amber-500 bg-amber-500/10'
+        if (voltage > 4.2) return 'border-red-500 bg-red-500/10'
+        if (voltage < 3.0) return 'border-amber-500 bg-amber-500/10'
+        return 'border-slate-800 bg-slate-900/50'
+    }
+
+    const handleLoadChange = (value: number) => {
+        setLoadCurrent(value)
+        updateControl({ loadAmps: value })
+    }
+
     return (
         <div className="min-h-screen bg-black text-white p-8 font-sans selection:bg-purple-500/30">
             {/* Header */}
@@ -49,7 +64,7 @@ export default function OpalPage() {
                             {isReady ? 'PYODIDE READY' : 'LOADING...'}
                         </span>
                     </div>
-                    <div className={`flex items-center gap-2 px-4 py-2 bg-slate-900 rounded-lg border ${state.contactorsClosed ? 'border-slate-800' : 'border-red-500/50'}`}>
+                    <div className={`flex items-center gap-2 px-4 py-2 bg-slate-900 rounded-lg border ${state.contactorsClosed ? 'border-slate-800' : 'border-red-500/50 bg-red-500/10'}`}>
                         <div className={`h-2 w-2 rounded-full ${state.contactorsClosed ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' : 'bg-red-500 animate-pulse'}`} />
                         <span className="text-xs font-mono text-slate-300">
                             {state.contactorsClosed ? 'HV ACTIVE' : 'HV DISCONNECTED'}
@@ -79,26 +94,58 @@ export default function OpalPage() {
                                     <Activity className="w-4 h-4 mr-2" /> SIMULATION CONTROL
                                 </h3>
                                 <div className="space-y-2">
-                                    <label className="text-xs text-slate-500">LOAD CURRENT (AMPS)</label>
+                                    <div className="flex justify-between text-xs">
+                                        <label className="text-slate-500">LOAD CURRENT</label>
+                                        <span className="text-purple-400 font-mono">{loadCurrent}A</span>
+                                    </div>
                                     <input
-                                        type="range" min="0" max="100" step="1"
-                                        defaultValue="0"
+                                        type="range" min="0" max="50" step="5"
+                                        value={loadCurrent}
                                         className="w-full accent-purple-500"
-                                        onChange={(e) => updateControl({ loadAmps: parseFloat(e.target.value) })}
+                                        onChange={(e) => handleLoadChange(parseFloat(e.target.value))}
                                     />
                                 </div>
                             </div>
 
-                            <div className="mt-6 grid grid-cols-3 gap-2">
+                            {/* Fault Injection Buttons */}
+                            <div className="mt-4">
+                                <label className="text-xs text-slate-500 mb-2 block">FAULT INJECTION</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'OVERTEMP' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <Thermometer className="w-3 h-3 mr-1" />
+                                        OVERHEAT
+                                    </button>
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'OVERVOLTAGE' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-400 hover:bg-yellow-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <Zap className="w-3 h-3 mr-1" />
+                                        OVERCHARGE
+                                    </button>
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'UNDERVOLTAGE' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 hover:bg-blue-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <BatteryLow className="w-3 h-3 mr-1" />
+                                        DEEP DISCH
+                                    </button>
+                                    <button
+                                        onClick={() => updateControl({ injectFault: 'SHORT_CIRCUIT' })}
+                                        className="flex items-center justify-center px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/20 transition-all text-xs font-medium"
+                                    >
+                                        <AlertTriangle className="w-3 h-3 mr-1" />
+                                        SHORT
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="mt-4 grid grid-cols-2 gap-2">
                                 <button
-                                    onClick={() => updateControl({ injectFault: 'OVERTEMP' })}
-                                    className="flex items-center justify-center px-3 py-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/20 transition-all text-xs font-bold"
-                                >
-                                    <AlertTriangle className="w-4 h-4 mr-1" />
-                                    FAULT
-                                </button>
-                                <button
-                                    onClick={() => updateControl({ injectFault: 'NONE' })}
+                                    onClick={() => { updateControl({ injectFault: 'NONE' }); setLoadCurrent(0); }}
                                     className="flex items-center justify-center px-3 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/20 transition-all text-xs font-bold"
                                 >
                                     <PlayCircle className="w-4 h-4 mr-1" />
@@ -110,7 +157,7 @@ export default function OpalPage() {
                                     className="flex items-center justify-center px-3 py-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400 hover:bg-indigo-500/20 transition-all text-xs font-bold disabled:opacity-50"
                                 >
                                     <FlaskConical className="w-4 h-4 mr-1" />
-                                    TEST
+                                    RUN TESTS
                                 </button>
                             </div>
                         </div>
@@ -122,15 +169,21 @@ export default function OpalPage() {
                         <VoltageChart data={history} />
                     </div>
 
-                    {/* Cell Grid */}
+                    {/* Cell Grid - Now with dynamic colors! */}
                     <div>
                         <h3 className="text-sm font-medium text-slate-400 mb-4 font-mono">INDIVIDUAL CELL MONITORING</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {state.cells.map((cell) => (
-                                <div key={cell.id} className={`relative p-4 rounded-lg border ${cell.temp > 40 ? 'border-amber-500/50 bg-amber-500/5' : 'border-slate-800 bg-slate-900/50'}`}>
-                                    <div className="absolute top-2 right-2 text-[10px] text-slate-600 font-mono">#{cell.id}</div>
-                                    <div className="text-2xl font-mono text-white mb-1">{cell.voltage.toFixed(2)}<span className="text-xs text-slate-500 ml-1">V</span></div>
-                                    <div className={`text-xs ${cell.temp > 40 ? 'text-amber-400' : 'text-slate-400'}`}>
+                                <div
+                                    key={cell.id}
+                                    className={`relative p-4 rounded-lg border transition-all duration-300 ${getCellColor(cell.temp, cell.voltage)}`}
+                                >
+                                    <div className="absolute top-2 right-2 text-[10px] text-slate-600 font-mono">CELL #{cell.id}</div>
+                                    <div className="text-2xl font-mono text-white mb-1">
+                                        {cell.voltage.toFixed(2)}
+                                        <span className="text-xs text-slate-500 ml-1">V</span>
+                                    </div>
+                                    <div className={`text-sm font-mono ${cell.temp > 45 ? 'text-amber-400' : cell.temp > 60 ? 'text-red-400' : 'text-slate-400'}`}>
                                         {cell.temp.toFixed(1)}°C
                                     </div>
                                     {cell.isBalancing && (
@@ -147,7 +200,7 @@ export default function OpalPage() {
                 {/* Right Column: Console */}
                 <div className="lg:col-span-4 rounded-xl border border-slate-800 bg-black p-4 font-mono text-xs overflow-hidden flex flex-col h-full min-h-[500px]">
                     <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800">
-                        <span className="text-slate-400">~/simulation/console</span>
+                        <span className="text-slate-400">~/bms/test_output</span>
                         <div className="flex gap-1.5">
                             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
                             <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />

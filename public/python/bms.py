@@ -13,25 +13,22 @@ class Cell:
         self.internal_resistance = 0.05 # Ohms
 
     def update(self, current, dt):
-        # Coulomb Counting for SOC
-        # current is positive for charging, negative for discharge
-        # dSOC = (I * dt) / (Capacity * 3600)
-        dhz = 3600.0
+        # Coulomb Counting for SOC (ACCELERATED for demo - 100x faster)
+        # In real life this would be hours, but for demo we speed it up
+        acceleration_factor = 100.0
+        dhz = 3600.0 / acceleration_factor
         self.soc += (current * dt) / (self.capacity_ah * dhz)
         self.soc = max(0.0, min(1.0, self.soc))
 
-        # Simple OCV model
-        # V = V_ocv(soc) + I * R
-        v_ocv = 3.0 + (1.2 * self.soc) # Linear approx 3.0V to 4.2V
+        # OCV model: V = V_ocv(soc) + I * R
+        v_ocv = 3.0 + (1.2 * self.soc)  # Linear approx 3.0V to 4.2V
         self.voltage = v_ocv + (current * self.internal_resistance)
         
-        # Temp model (simple heating)
-        # Power = I^2 * R
+        # Temperature model (ACCELERATED for demo)
         power_heat = (current ** 2) * self.internal_resistance
-        # Cooling coefficient (passive)
-        cooling = (self.temp - 25.0) * 0.05
-        
-        self.temp += (power_heat * 0.01 * dt) - (cooling * dt)
+        cooling = (self.temp - 25.0) * 0.1  # Faster cooling
+        self.temp += (power_heat * 0.5 * dt) - (cooling * dt)  # 50x faster heating
+        self.temp = max(20.0, min(100.0, self.temp))  # Clamp
 
 class BMS:
     def __init__(self):
@@ -50,7 +47,7 @@ class BMS:
         pack_soc = sum(c.soc for c in self.cells) / len(self.cells)
 
         state = {
-            "timestamp": 0, # To be filled by JS or kept simplified
+            "timestamp": 0,
             "cells": [
                 {
                     "id": c.id,
@@ -89,7 +86,7 @@ class BMS:
             self.contactors_closed = False
         
         if self.contactors_closed:
-            # Balancing Logic (Simple passive) - Check BEFORE update modifies voltages
+            # Balancing Logic (Simple passive)
             if self.charger_amps > 0 and max_voltage > 4.0:
                for cell in self.cells:
                    if cell.voltage > min_voltage + 0.05:
@@ -102,6 +99,24 @@ class BMS:
             # Update cell physics
             for cell in self.cells:
                 cell.update(net_current, dt)
+        
+        # Thermal spreading (heat propagates to neighbors even when contactors open)
+        self._thermal_spread(dt)
+    
+    def _thermal_spread(self, dt):
+        """Simulate heat spreading between adjacent cells"""
+        temps = [c.temp for c in self.cells]
+        for i, cell in enumerate(self.cells):
+            # Heat flows from hot to cold neighbors
+            neighbors = []
+            if i > 0: neighbors.append(temps[i-1])
+            if i < 3: neighbors.append(temps[i+1])
+            
+            if neighbors:
+                avg_neighbor = sum(neighbors) / len(neighbors)
+                # Heat transfer coefficient
+                transfer = (avg_neighbor - cell.temp) * 0.05 * dt
+                cell.temp += transfer
 
     def update_control(self, control_json):
         data = json.loads(control_json)
@@ -109,19 +124,34 @@ class BMS:
         if 'loadAmps' in data: self.load_amps = float(data['loadAmps'])
         if 'fanDuty' in data: self.fan_duty = float(data['fanDuty'])
         
-        # Fault Injection
+        # Fault Injection - More dramatic effects!
         if 'injectFault' in data:
             fault = data['injectFault']
             if fault == 'OVERVOLTAGE':
+                # Overcharge Cell 0
                 self.cells[0].voltage = 4.5
+                self.cells[0].soc = 1.0
             elif fault == 'OVERTEMP':
+                # Thermal event - Cell 0 gets hot, spreads to neighbors
                 self.cells[0].temp = 80.0
+                self.cells[1].temp = 50.0  # Adjacent cell feels heat
+            elif fault == 'UNDERVOLTAGE':
+                # Deep discharge Cell 2
+                self.cells[2].voltage = 2.3
+                self.cells[2].soc = 0.0
+            elif fault == 'SHORT_CIRCUIT':
+                # Short circuit - massive current, all cells affected
+                for c in self.cells:
+                    c.temp += 30.0  # All cells heat up
             elif fault == 'NONE':
+                # Full system reset
                 self.faults = []
                 self.contactors_closed = True
                 for c in self.cells: 
                     c.voltage = 3.7
                     c.temp = 25.0
+                    c.soc = 0.5
+                    c.is_balancing = False
 
 # Singleton instance
 bms = BMS()
@@ -132,4 +162,3 @@ def tick(dt_ms):
 
 def update_control(json_str):
     bms.update_control(json_str)
-

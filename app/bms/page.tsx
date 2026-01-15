@@ -51,10 +51,10 @@ export default function OpalPage() {
             <header className="mb-8 flex items-center justify-between border-b border-white/10 pb-6">
                 <div>
                     <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                        OPAL-RT <span className="text-white">VIRTUAL HIL</span>
+                        VIRTUAL <span className="text-white">HIL SIMULATOR</span>
                     </h1>
                     <p className="text-slate-400 mt-2 font-mono text-sm">
-                        BATTERY MANAGEMENT SYSTEM SIMULATOR // v1.0.0
+                        BATTERY MANAGEMENT SYSTEM // v1.0.0
                     </p>
                 </div>
                 <div className="flex gap-4">

@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Virtual BMS HIL Simulator
 
-## Getting Started
+> **A professional demonstration of QA Automation, Python, and Real-time Systems.**
 
-First, run the development server:
+![Status](https://img.shields.io/badge/Status-Live-emerald)
+![Tech](https://img.shields.io/badge/Stack-Next.js_·_Pyodide_·_Zustand-purple)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project simulates a **Battery Management System (BMS)** in a web browser. It uses **Pyodide** to run actual Python BMS control logic inside a Web Worker, simulating a "Hardware-in-the-Loop" (HIL) environment where the frontend acts as the physical plant and the Python code acts as the embedded controller.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Live Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Access the Simulator:** `http://localhost:3000/bms`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Key Features:
+- **Voltage/Temp Telemetry:** Real-time 60Hz physics simulation.
+- **Fault Injection:** Trigger Overvoltage, Overtemp, and Short Circuits.
+- **Automated Testing:** "Sabotage Mode" proves the test suite catches failures.
+- **Isolation:** Tests run in a separate instance to avoid disrupting the visual demo.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📚 Terminology Glossary
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you are new to EV Battery Systems, here is a quick guide to the terms used in this simulator:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Term | Full Name | Definition |
+| :--- | :--- | :--- |
+| **BMS** | Battery Management System | The "brain" of the battery pack. It monitors voltage and temperature, estimates state of charge, and protects the battery from unsafe conditions. |
+| **HIL** | Hardware-in-the-Loop | A testing technique where real controllers are tested against a simulated physical system. In this project, the "Virtual HIL" simulates the battery physics for the BMS logic to control. |
+| **HV** | High Voltage | Refers to the main traction battery circuit. When safety checks fail, the BMS opens the "HV Contactors" (relays) to disconnect the battery and prevent damage. |
+| **SoC** | State of Charge | The remaining energy in the battery, expressed as a percentage (0% = empty, 100% = full). |
+| **Cell Balancing** | - | The process of equalizing the voltage of individual cells in a pack. If one cell is higher than others, the BMS discharges it slightly ('passive balancing') to match the rest. |
+| **Contactor** | - | A heavy-duty switch used to connect or disconnect the high-voltage battery from the vehicle or load. |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Technical Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This application mimics a real embedded system architecture:
+
+1.  **The "Plant" (Frontend):**
+    - Built with **Next.js** and **Tailwind CSS**.
+    - Visualizes the state of the battery (Voltage, Temp, Contactors).
+    - Sends inputs (Load Current, Fault Injections) to the backend.
+
+2.  **The "Controller" (Backend/Worker):**
+    - Runs in a **Web Worker** using **Pyodide** (WASM Python).
+    - Executes the `bms.py` script at **10Hz** (100ms interval).
+    - Performs safety checks (Overvoltage > 4.25V, Overtemp > 60°C).
+    - If a fault is detected, it "opens" the contactors (sets `contactors_closed = False`).
+
+3.  **The Test Runner:**
+    - A dedicated Python script (`test_bms.py`) running `pytest`-style assertions.
+    - runs **automatically** whenever a fault is injected to verify system integrity.
+    - Decoupled from the main simulation to verify logic without resetting the visual state.
+
+## 💻 Running Locally
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+
+3.  **Open Browser:**
+    Navigate to `http://localhost:3000/bms`
+
+## 🧪 Testing the Simulator
+
+1.  **Normal Operation:**
+    - Increase the **LOAD** slider.
+    - Watch the Voltage drop (Sag) and Temperature rise.
+    - Watch the **SoC** decrease over time.
+
+2.  **Fault Injection:**
+    - Click **OVERCHARGE**.
+    - Watch Cell Voltage spike > 4.25V.
+    - Observe `Safety Shutdown` message in console.
+    - Observe **HV DISCONNECTED** status.
+
+3.  **Sabotage Mode (QA Demo):**
+    - Click **SABOTAGE** (Disables BMS safety protections).
+    - Inject **OVERHEAT**.
+    - Notice the system *fails* to shut down (Temperature > 60°C but HV stays Active).
+    - Notice the **Test Suite** reports failures (❌ Thermal Runaway Protection).
+
+---
+
+*Created by Jordan LMB for Portfolio Showcase*

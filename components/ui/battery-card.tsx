@@ -44,24 +44,27 @@ export function BatteryCard({
                         {status}
                     </div>
                 </div>
-                <div className="relative h-12 w-12 flex items-center justify-center">
-                    {/* Battery Circular Indicator */}
-                    <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
-                        <circle className="text-slate-800" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
-                        <circle
-                            className={cn("transition-all duration-500", status === 'CRITICAL' ? "text-rose-500" : "text-emerald-500")}
-                            strokeWidth="8"
-                            strokeDasharray={251.2}
-                            strokeDashoffset={251.2 - (251.2 * soc) / 100}
-                            strokeLinecap="round"
-                            stroke="currentColor"
-                            fill="transparent"
-                            r="40"
-                            cx="50"
-                            cy="50"
-                        />
-                    </svg>
-                    <span className="text-xs font-bold text-white">{Math.round(soc)}%</span>
+                <div className="flex flex-col items-center gap-1">
+                    <div className="relative h-12 w-12 flex items-center justify-center">
+                        {/* Battery Circular Indicator */}
+                        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
+                            <circle className="text-slate-800" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+                            <circle
+                                className={cn("transition-all duration-500", status === 'CRITICAL' ? "text-rose-500" : "text-emerald-500")}
+                                strokeWidth="8"
+                                strokeDasharray={251.2}
+                                strokeDashoffset={251.2 - (251.2 * soc) / 100}
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="40"
+                                cx="50"
+                                cy="50"
+                            />
+                        </svg>
+                        <span className="text-xs font-bold text-white">{Math.round(soc)}%</span>
+                    </div>
+                    <span className="text-[9px] font-mono text-slate-500 tracking-wider">BATTERY</span>
                 </div>
             </div>
 

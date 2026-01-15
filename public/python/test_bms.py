@@ -51,21 +51,25 @@ class BMSTestRunner:
         self.setup_state = {}
         
     def setup(self):
-        """Store initial BMS state for reset after each test."""
-        self.setup_state = {
-            'voltages': [c.voltage for c in self.bms.cells],
-            'temps': [c.temp for c in self.bms.cells],
-            'faults': self.bms.faults.copy(),
-            'contactors': self.bms.contactors_closed,
-            'charger_amps': self.bms.charger_amps,
-            'load_amps': self.bms.load_amps
-        }
+        """Reset BMS to known-good state BEFORE each test."""
+        # Always start from a clean, healthy state
+        for c in self.bms.cells:
+            c.voltage = 3.7
+            c.temp = 25.0
+            c.soc = 0.5
+            c.is_balancing = False
+        self.bms.faults = []
+        self.bms.contactors_closed = True
+        self.bms.charger_amps = 0
+        self.bms.load_amps = 0
     
     def teardown(self):
-        """Reset BMS to initial state after each test."""
-        for i, c in enumerate(self.bms.cells):
-            c.voltage = self.setup_state['voltages'][i]
-            c.temp = self.setup_state['temps'][i]
+        """Reset BMS to known-good state AFTER each test."""
+        # Restore to healthy state for next test
+        for c in self.bms.cells:
+            c.voltage = 3.7
+            c.temp = 25.0
+            c.soc = 0.5
             c.is_balancing = False
         self.bms.faults = []
         self.bms.contactors_closed = True

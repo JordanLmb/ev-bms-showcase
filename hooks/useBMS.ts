@@ -35,6 +35,7 @@ interface BMSStore {
     state: BMSSystemState;
     worker: Worker | null;
     isReady: boolean;
+    isTestRunning: boolean;
     history: HistoryPoint[];
     logs: LogEntry[];
     simulationTime: number;
@@ -52,6 +53,7 @@ export const useBMS = create<BMSStore>((set, get) => ({
     state: INITIAL_STATE,
     worker: null,
     isReady: false,
+    isTestRunning: false,
     history: [],
     logs: [],
     simulationTime: 0,
@@ -143,10 +145,15 @@ export const useBMS = create<BMSStore>((set, get) => ({
     },
 
     runTests: () => {
-        const { worker, addLog } = get();
-        if (worker) {
-            addLog('Running BMS test suite...', 'info');
-            worker.postMessage({ type: 'RUN_TESTS' });
-        }
+        const { worker, addLog, isTestRunning } = get();
+        // Debounce: don't run if tests already running
+        if (!worker || isTestRunning) return;
+
+        set({ isTestRunning: true });
+        addLog('Running BMS test suite...', 'info');
+        worker.postMessage({ type: 'RUN_TESTS' });
+
+        // Reset flag after tests complete (3 second timeout)
+        setTimeout(() => set({ isTestRunning: false }), 3000);
     }
 }));

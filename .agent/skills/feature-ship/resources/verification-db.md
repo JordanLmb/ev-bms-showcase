@@ -27,6 +27,7 @@
 - **SHADOW TEST:** To verify Python logic intended for Pyodide without complex mocking, write a standard Python unit test (`unittest`) and run it locally with `python tests/test_name.py`. This confirms the logic works before integrating with WASM.
 - **VERSION MISMATCH:** If you see `Pyodide version does not match` in the browser console, ensure the `indexURL` in the worker matches the version installed via npm. Check with `npm list pyodide` and update the CDN URL accordingly (e.g., `https://cdn.jsdelivr.net/pyodide/v0.29.1/full/`).
 - **WORKER FETCH URLS:** Web Workers cannot resolve relative URLs like `/path/to/file`. Use `${self.location.origin}/path/to/file` to construct absolute URLs for fetch calls inside workers.
+- **DICT CONVERSION:** When passing Python dicts to JS, avoid `.toJs()` which creates Map objects. Instead, use `json.dumps()` in Python and `JSON.parse()` in JS for clean object conversion.
 
 ## C. FEATURE-SPECIFIC VERIFICATION
 

@@ -9,21 +9,24 @@ let intervalId: any = null;
 
 async function initPyodide() {
     try {
-        // Load Pyodide using the npm package loader, but fetch assets from CDN
-        // This avoids 'importScripts' issues and 'file not found' for local assets
         // @ts-ignore
         pyodide = await loadPyodide({
             indexURL: "https://cdn.jsdelivr.net/pyodide/v0.29.1/full/"
         });
 
-        // Fetch our custom Python logic using absolute URL (Workers need this)
-        const response = await fetch(`${self.location.origin}/python/bms.py`);
-        const pythonCode = await response.text();
+        // Fetch BMS simulation logic
+        const bmsResponse = await fetch(`${self.location.origin}/python/bms.py`);
+        const bmsCode = await bmsResponse.text();
 
-        // Load the code into Pyodide filesystem/memory
-        pyodide.runPython(pythonCode);
+        // Fetch professional test suite
+        const testResponse = await fetch(`${self.location.origin}/python/test_bms.py`);
+        const testCode = await testResponse.text();
 
-        // Notify main thread attached
+        // Load both modules
+        pyodide.runPython(bmsCode);
+        pyodide.runPython(testCode);
+
+        // Notify main thread
         ctx.postMessage({ type: 'READY' });
 
         // Start the simulation loop (60Hz)
@@ -37,10 +40,11 @@ async function initPyodide() {
                     console.error("Pyodide Tick Error:", e);
                 }
             }
-        }, 16); // ~60 FPS
+        }, 16);
 
     } catch (error) {
         console.error("Failed to load Pyodide:", error);
+        ctx.postMessage({ type: 'LOG', payload: { message: `Failed to load Pyodide: ${error}`, level: 'error' } });
     }
 }
 
@@ -56,9 +60,79 @@ ctx.onmessage = async (event) => {
             const controlJson = JSON.stringify(payload);
             const updateControl = pyodide.globals.get('update_control');
             updateControl(controlJson);
+        } else if (type === 'RUN_TESTS') {
+            // Run the professional test suite
+            const reportJson = pyodide.runPython(`
+import json
+json.dumps(run_tests())
+            `);
+            const report = JSON.parse(reportJson);
+
+            // Send summary first
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: `═══════════════════════════════════════════`,
+                    level: 'info'
+                }
+            });
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: `  BMS HIL TEST SUITE - ${report.summary.total} tests`,
+                    level: 'info'
+                }
+            });
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: `═══════════════════════════════════════════`,
+                    level: 'info'
+                }
+            });
+
+            // Send each test result
+            for (const test of report.tests) {
+                const icon = test.result === 'PASS' ? '✅' : '❌';
+                ctx.postMessage({
+                    type: 'TEST_RESULT',
+                    payload: {
+                        name: `${test.id}: ${test.name}`,
+                        passed: test.result === 'PASS',
+                        message: test.message
+                    }
+                });
+            }
+
+            // Send summary
+            const allPassed = report.summary.failed === 0;
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: `───────────────────────────────────────────`,
+                    level: 'info'
+                }
+            });
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: `Results: ${report.summary.passed} passed, ${report.summary.failed} failed (${report.summary.pass_rate})`,
+                    level: allPassed ? 'success' : 'error'
+                }
+            });
+            ctx.postMessage({
+                type: 'LOG',
+                payload: {
+                    message: allPassed
+                        ? '🎉 All safety systems verified!'
+                        : '⚠️ Safety check failures detected!',
+                    level: allPassed ? 'success' : 'error'
+                }
+            });
         }
     } catch (err) {
         console.error("Worker Error:", err);
+        ctx.postMessage({ type: 'LOG', payload: { message: `Worker Error: ${err}`, level: 'error' } });
     }
 };
 
